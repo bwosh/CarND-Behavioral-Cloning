@@ -10,7 +10,18 @@ The simulator is not an app as I expected from the start.
 To run simulator it was needed to :
 - Get [Unity framework](https://unity.com/) (Individual/Personal version was working fine)
 - Use [git-lfs](https://help.github.com/en/github/managing-large-files/installing-git-large-file-storage) to get repository
-- Fix deprecated code inside simulator [Assets/Standard Assets/Cameras/Scripts/TargetFieldOfView.cs](https://github.com/udacity/self-driving-car-sim/blob/master/Assets/Standard%20Assets/Cameras/Scripts/TargetFieldOfView.cs#L62) - the "(r is ParticleRenderer)" check was deleted (other stayeduntouched )
+- Fix deprecated code inside simulator [Assets/Standard Assets/Cameras/Scripts/TargetFieldOfView.cs](https://github.com/udacity/self-driving-car-sim/blob/master/Assets/Standard%20Assets/Cameras/Scripts/TargetFieldOfView.cs#L62) - 
+```C#
+if (!((r is TrailRenderer) || (r is ParticleRenderer) || (r is ParticleSystemRenderer)))
+```
+
+the "(r is ParticleRenderer)" check was deleted and  other stayed untouched so after change it stated:  
+
+```C#
+if (!((r is TrailRenderer) || (r is ParticleSystemRenderer)))
+```
+
+The simulator was ready to go:
 
 ![simulator](./images/simulator.png)
 
@@ -24,3 +35,5 @@ Two recordings clock-wise and two counter-clock-wise were recorder as the data f
 To cut off areas that should not affect the driving I calculated *'the mean frame'* of all recordings. Then Region Of Interest was marked.
 
 ![roi](./images/roi.png)
+
+Data was normalized to range [-1;1]
