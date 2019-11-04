@@ -205,7 +205,7 @@ Modified code from [Udacity Project's repository](https://github.com/udacity/Car
 - [drive.py](./drive.py) to communicate with simulator.
 - [video.py](./video.py) to generate the output video.
 
-Result frames generated automatically merged into video:
+Result frames generated automatically merged into video:  
 [![video](./images/2019_11_03_21_32_46_309.jpg)](./images/video.mp4)
 
 Similar recording of autonomus drive taken from screen capture can be seen below. It can be said it works in realtime. (this is h265 encoded video to keep it reasonably small):  
@@ -215,16 +215,20 @@ Similar recording of autonomus drive taken from screen capture can be seen below
 
 ### Data augmentation
 
-[TODO]
+To lower overfitting some data augmentation could be introduced. For example brightness, contrast, blur, gaussian noise, monior shift, and minor rotate.
 
 ### Cross-entropy training
 
-[TODO]
+Fitting to Mean Square Loss is a bit too much considering uncertainity of gathered data. Intoducing cross-entropy loss for fitting the right bin could lowe overfitting and focus more on "it should be slight left: instead of matching the value.
 
 ### Regularization
 
-[TODO]
+Batch Norm layers could also prevent overfitting - if there were any outlying frames it could properly address thise issues.
 
 ### Data collection
 
-[TODO]
+Data collected from 3 laps seems to be very little data. For the real life scenario even for track like this the dataset shuld contain data from many times in the day, many weather conditions, many drivers to start taking about trusting it the model.
+
+### Constant fixing issue
+
+Autonomous drive at the momen is fixing the angle every frame. A mechanism of averaging should be considered t make position of the car more stable.
