@@ -13,11 +13,6 @@ from PIL import Image
 from flask import Flask
 from io import BytesIO
 
-
-#from keras.models import load_model
-#import h5py
-#from keras import __version__ as keras_version
-
 sio = socketio.Server()
 app = Flask(__name__)
 model = None
@@ -99,11 +94,6 @@ def send_control(steering_angle, throttle):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Remote Driving')
     parser.add_argument(
-        'model',
-        type=str,
-        help='Path to model h5 file. Model should be on the same path.'
-    )
-    parser.add_argument(
         'image_folder',
         type=str,
         nargs='?',
@@ -112,25 +102,12 @@ if __name__ == '__main__':
     )
     args = parser.parse_args()
 
-   # check that model Keras version is same as local Keras version
-#    f = h5py.File(args.model, mode='r')
-#    model_version = f.attrs.get('keras_version')
-#    keras_version = str(keras_version).encode('utf8')
-
-#    if model_version != keras_version:
-#        print('You are using Keras version ', keras_version,
-#              ', but the model was built using ', model_version)
-#
-#    model = load_model(args.model)
-
-    # load json and create model
+    # load model
     json_file = open('model/model.json', 'r')
     loaded_model_json = json_file.read()
     json_file.close()
     loaded_model = model_from_json(loaded_model_json)
-    # load weights into new model
     loaded_model.load_weights("model/model.h5")
-    print("Loaded model from disk")
     model = loaded_model
 
     if args.image_folder != '':

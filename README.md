@@ -49,13 +49,26 @@ To cut off areas that should not affect the driving I calculated *'the mean fram
 
 Data was normalized to range [-1;1]
 
+# Side images
+
+The simulator generates images from three points:
+- center of a car
+- left side of a car
+- right side of a car
+All camera look forward.
+
+A trick was used to extend dataset.
+All side images look like they need turn in tenrms of 'cneter camera' so they were used as samples requiring turning. Used coefficient for those cameas was equal to **0.2**.
+
 # Data split
 
-Classic data split to train/val/test subset is questionable for gathered data. Even though it was considered I firstly tried without this split to check how overfitted model will behave.
+Classic data split to train/val/test subset is questionable for gathered data. Even though it was considered I firstly tried without this split to check how model will behave.
 
 Reason why the data split is questionable is that gathered data differ in each iteration. No driver can reproduce *EXACT* the same results each circle so no real *GRAOUND TRUTH* can be easily found. 
 
 That's why validation of model will be mane not in terms of validation metrics but in terms of visual result for this case.
+
+Dropout layer has been introduced to keep model from overfitting.
 
 # Metrics
 
@@ -98,11 +111,25 @@ The accuracy is considered as how many turning angles fall into the right bin. T
 The size of processed image (after cropping) is 320x70 pixels in 3 channels. Classig models with convolution and pooling blocks could easily shring this height of 70 to very small number. Therefore model with no max-pooling layers was created.
 
 The model contains:
-- 3 convolution layers to extract low and hight level features
+- 3 convolution layers to extract low and high level features
 - global pooling layer to average existance of features on image
 - 2 dense layers to regress angle value
 
 **Details**:
+
+![net](./images/net.png)
+
+**List of layers**:  
+- Normalize
+- Crop2D 
+- Conv2d with 5x5 kernel, padding valid, ReLU activation 
+- Conv2d with 3x3 kernel, padding valid, ReLU activation 
+- Conv2d with 3x3 kernel, padding valid, ReLU activation 
+- Conv2d with 3x3 kernel, padding valid, ReLU activation 
+- Global Average Pooling
+- Dense with ReLU activation
+- (Dropout) with rate 0.5 used during training
+- Dense without activation 
 
 ```bash
 _________________________________________________________________
@@ -123,6 +150,8 @@ _________________________________________________________________
 global_average_pooling2d_14  (None, 128)               0         
 _________________________________________________________________
 dense_23 (Dense)             (None, 32)                4128      
+_________________________________________________________________
+dropout_22 (Dropout)         (None, 32)                0      
 _________________________________________________________________
 dense_24 (Dense)             (None, 1)                 33        
 =================================================================
@@ -168,18 +197,34 @@ Since the plot is hadr to interpret because of number of bins averagle plot was 
 
 The accuracy also seem to converge after epoch 80.
 
-# Results - Autonomous drive
+# Validation Results - Autonomous drive
 
-After training the model the simulator was used in autonomus drive mode. 
+Having overfitted model might end badly on data from outsithe the dataset. That's why the simulator was used in autonomus drive mode with usage of trained model.
+
+Modified code from [Udacity Project's repository](https://github.com/udacity/CarND-Behavioral-Cloning-P3) was used:
+- [drive.py](./drive.py) to communicate with simulator.
+- [video.py](./video.py) to generate the output video.
 
 Result frames generated automatically merged into video:
-
 [![video](./images/2019_11_03_21_32_46_309.jpg)](./images/video.mp4)
 
-Similar recording of autonomus drive, this time taken from screen capture - it can be said it works in realtime. (this is h265 encoded video to keep it reasonably small) 
-
+Similar recording of autonomus drive taken from screen capture can be seen below. It can be said it works in realtime. (this is h265 encoded video to keep it reasonably small):  
 [![video](./images/unity_screenshot.png)](./images/unity.mp4)
 
 # Discussion
+
+### Data augmentation
+
+[TODO]
+
+### Cross-entropy training
+
+[TODO]
+
+### Regularization
+
+[TODO]
+
+### Data collection
 
 [TODO]
